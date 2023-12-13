@@ -38,7 +38,13 @@ public interface SysUserService extends BaseService<SysUser,String>{
 	 * @param userPassword 用户密码
 	 * @return 脱敏后的用户信息
 	 */
-	JSONObject userLogin(String userAccount, String userPassword);
+//	JSONObject userLogin(String userAccount, String userPassword);
+
+	/**
+	 * 获取用户权限
+	 * @return
+	 */
+	List<String> listUserRoles(String userRoleId);
 
 
 	/**

@@ -48,8 +48,8 @@ public class SysUserController {
 		if (sysUser == null) {
 			throw new BusinessException(ErrorCode.PARAMS_ERROR);
 		}
-		String userAccount = sysUser.getUserAccount();
-		String userPassword = sysUser.getUserPassword();
+		String userAccount = sysUser.getUsername();
+		String userPassword = sysUser.getPassword();
 		String checkPassword = sysUser.getCheckPassword();
 		if (StringUtils.isAnyBlank(userAccount, userPassword,checkPassword)) {
 			return null;
@@ -60,19 +60,19 @@ public class SysUserController {
 		return ok;
 	}
 
-	@PostMapping("/login")
-	public JSONObject userLogin(@RequestBody UserRegisterRequest userLoginRequest) {
-		if (userLoginRequest == null) {
-			throw new BusinessException(ErrorCode.PARAMS_ERROR);
-		}
-		String userAccount = userLoginRequest.getUserAccount();
-		String userPassword = userLoginRequest.getUserPassword();
-		if (StringUtils.isAnyBlank(userAccount, userPassword)) {
-			throw new BusinessException(ErrorCode.PARAMS_ERROR);
-		}
-		JSONObject loginUserVO = sysUserService.userLogin(userAccount, userPassword);
-		return loginUserVO;
-	}
+//	@PostMapping("/login")
+//	public JSONObject userLogin(@RequestBody UserRegisterRequest userLoginRequest) {
+//		if (userLoginRequest == null) {
+//			throw new BusinessException(ErrorCode.PARAMS_ERROR);
+//		}
+//		String userAccount = userLoginRequest.getUserAccount();
+//		String userPassword = userLoginRequest.getUserPassword();
+//		if (StringUtils.isAnyBlank(userAccount, userPassword)) {
+//			throw new BusinessException(ErrorCode.PARAMS_ERROR);
+//		}
+//		JSONObject loginUserVO = sysUserService.userLogin(userAccount, userPassword);
+//		return loginUserVO;
+//	}
 
 
 	@GetMapping("/findById/{id}")
@@ -83,7 +83,6 @@ public class SysUserController {
 	}
 
 	@PostMapping("/findAll")
-	@AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
 	@ApiOperation(value = "根据条件查找所有", notes = "条件 {'属性':'value'}")
 	public List<SysUser> findAll(@RequestBody HashMap<String, Object> condition) throws Exception {
 		List<SysUser> list = sysUserService.selectAllByCondition(condition);

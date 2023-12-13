@@ -23,12 +23,12 @@ public interface UserConstant {
     /**
      * 默认角色
      */
-    String DEFAULT_ROLE = "user";
+    String ROLE_USER = "ROLE_USER";
 
     /**
      * 管理员角色
      */
-    String ADMIN_ROLE = "admin";
+    String ROLE_ADMIN = "ROLE_ADMIN";
 
     /**
      * 被封号

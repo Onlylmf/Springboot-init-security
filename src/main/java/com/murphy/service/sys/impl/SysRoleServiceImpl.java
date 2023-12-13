@@ -35,7 +35,10 @@ public class SysRoleServiceImpl implements SysRoleService{
     @Autowired
 	private SysRoleMapper sysRoleDao;
 
-	
+	@Override
+	public List<SysRole> listUserRoles(String userId){
+		return sysRoleDao.findRolesByUserId(userId);
+	}
 	
 	@Override
 	public int countByCondition(HashMap<String, Object> condition) throws Exception {
@@ -52,9 +55,8 @@ public class SysRoleServiceImpl implements SysRoleService{
 	}
 
 	@Override
-	public SysRole findRolesByUserId(String id) {
+	public List<SysRole> findRolesByUserId(String id) {
 		return sysRoleDao.findRolesByUserId(id);
-
 	}
 
 	@Override

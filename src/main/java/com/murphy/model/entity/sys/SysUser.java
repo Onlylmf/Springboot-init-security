@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -91,8 +92,14 @@ public class SysUser implements Serializable {
 	/** @NotNull(groups = {AddGroup.class }, message = "性别 不能为空") */ 
     @ApiModelProperty(value="性别  ")
 	private Integer sex;
-	
-	
+
+	/**
+	 *   邮箱
+	 */
+	/** @NotNull(groups = {AddGroup.class }, message = "性别 不能为空") */
+	@ApiModelProperty(value="邮箱  ")
+	private String email;
+
 	/**
      *   状态（1有效,0无效）
      */
@@ -152,7 +159,7 @@ public class SysUser implements Serializable {
 	 * 用户权限
 	 */
 	@Transient
-	private SysRole sysRole;
+	private List<SysRole> sysRole;
 
 	
 }

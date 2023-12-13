@@ -44,3 +44,23 @@ mybatis:
 config:
   #filePath: classpath:/static/file
   filePath: D:\Environment\nginx-1.24.0\static\file
+  auth:
+    # 用于登录的 url
+    loginUrl: /api/auth/login
+    # token 类型
+    token_type: jwt
+    # 盐
+    salt_key: murphy
+    # 当 Remember 是 false 时，token 有效时间 2 小时   为 true 时为7天
+    expiration_remember_time: 604800l
+    expiration_time: 7200l
+    # Authorization 请求头
+    token_header: Authorization
+    # 一般是在请求头里加入 Authorization，并加上 Bearer 标注
+    token_prefix: Bearer
+
+
+
+    token_role_claim: role
+    token_issuer: security
+    token_audience: security-all

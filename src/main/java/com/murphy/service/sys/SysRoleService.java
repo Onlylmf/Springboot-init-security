@@ -20,7 +20,14 @@ public interface SysRoleService extends BaseService<SysRole,Long>{
 	 *  CACHE_NAME     SysRole
 	 */
 	public final static String CACHE_NAME = "SysRole";
-	
+
+
+	/**
+	 * 根据id查询用户的权限列表
+	 */
+	List<SysRole> listUserRoles(String userRoleId);
+
+
 	/**
 	 * 查询符合条件的 SysRole的个数
 	 * @param condition 条件
@@ -40,7 +47,7 @@ public interface SysRoleService extends BaseService<SysRole,Long>{
 	/**
 	 * 根据用户id查询权限
 	 */
-	SysRole findRolesByUserId(String id);
+	List<SysRole> findRolesByUserId(String id);
 
 	/**
 	 * 根据主键删除 SysRole

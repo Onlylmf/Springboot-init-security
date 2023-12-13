@@ -2,18 +2,17 @@ package com.murphy.service.sys.impl;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import cn.hutool.json.JSONObject;
 import com.murphy.common.ErrorCode;
-import com.murphy.constants.ContentConstant;
 import com.murphy.exception.BusinessException;
 import com.murphy.model.dto.user.UserRegisterRequest;
 import com.murphy.model.entity.sys.SysRole;
 import com.murphy.model.vo.LoginUserVO;
 import com.murphy.service.sys.SysRoleService;
-import com.murphy.utils.JWTUtils;
+import com.murphy.utils.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +23,6 @@ import com.github.pagehelper.PageInfo;
 import com.murphy.utils.SpringContextUtils;
 import org.springframework.cache.Cache;
 import com.murphy.utils.DateUtils;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.CacheEvict;
@@ -84,10 +82,18 @@ public class SysUserServiceImpl implements SysUserService{
 	}
 
 	@Override
+	public List<String> listUserRoles(String userRoleId){
+		return sysRoleService.listUserRoles(userRoleId)
+				.stream()
+				.map(SysRole::getName)
+				.collect(Collectors.toList());
+	}
+
+	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
 	public int save(UserRegisterRequest record) throws Exception {
-		String username = record.getUserAccount();
-		String password = record.getUserPassword();
+		String username = record.getUsername();
+		String password = record.getPassword();
 		String checkPassword = record.getCheckPassword();
 		// 1. 校验
 		if (StringUtils.isAnyBlank(username, password)) {
@@ -122,43 +128,43 @@ public class SysUserServiceImpl implements SysUserService{
 		}
 	}
 
-	@Override
-	public JSONObject userLogin(String userAccount, String userPassword) {
-		// 1. 校验
-		if (StringUtils.isAnyBlank(userAccount, userPassword)) {
-			throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
-		}
-		if (userAccount.length() < 4) {
-			throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号错误");
-		}
-		if (userPassword.length() < 8) {
-			throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码错误");
-		}
-
-		// 查询用户是否存在
-		SysUser user = new SysUser();
-		user.setUsername(userAccount);
-		user = sysUserDao.selectOne(user);
-		if (user != null) {
-			LoginUserVO loginUserVO = new LoginUserVO();
-			BeanUtils.copyProperties(user,loginUserVO);
-			// 2. 加密
-			BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-			if (!bCryptPasswordEncoder.matches(userPassword,user.getPassword())){
-				throw new BusinessException(ErrorCode.PARAMS_ERROR,"用户名或密码错误");
-			}
-			// 3. 记录用户的登录态 生成token
-			String token = JWTUtils.createToken(user);
-			LoginUserVO loginUser = this.getLoginUserVO(user);
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("user", loginUser);
-			jsonObject.put("token", token);
-			return jsonObject;
-		}
-
-		throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在或密码错误");
-
-	}
+//	@Override
+//	public JSONObject userLogin(String userAccount, String userPassword) {
+//		// 1. 校验
+//		if (StringUtils.isAnyBlank(userAccount, userPassword)) {
+//			throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
+//		}
+//		if (userAccount.length() < 4) {
+//			throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号错误");
+//		}
+//		if (userPassword.length() < 8) {
+//			throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码错误");
+//		}
+//
+//		// 查询用户是否存在
+//		SysUser user = new SysUser();
+//		user.setUsername(userAccount);
+//		user = sysUserDao.selectOne(user);
+//		if (user != null) {
+//			LoginUserVO loginUserVO = new LoginUserVO();
+//			BeanUtils.copyProperties(user,loginUserVO);
+//			// 2. 加密
+//			BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+//			if (!bCryptPasswordEncoder.matches(userPassword,user.getPassword())){
+//				throw new BusinessException(ErrorCode.PARAMS_ERROR,"用户名或密码错误");
+//			}
+//			// 3. 记录用户的登录态 生成token
+//			String token = JwtUtils.createToken(user);
+//			LoginUserVO loginUser = this.getLoginUserVO(user);
+//			JSONObject jsonObject = new JSONObject();
+//			jsonObject.put("user", loginUser);
+//			jsonObject.put("token", token);
+//			return jsonObject;
+//		}
+//
+//		throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在或密码错误");
+//
+//	}
 
 	@Override
 	public LoginUserVO findByUsername(String username){
@@ -170,7 +176,7 @@ public class SysUserServiceImpl implements SysUserService{
 			LoginUserVO loginUserVO = new LoginUserVO();
 			BeanUtils.copyProperties(user,loginUserVO);
 
-			SysRole sysRoles = sysRoleService.findRolesByUserId(user.getId());
+			List<SysRole> sysRoles = sysRoleService.findRolesByUserId(user.getId());
 			loginUserVO.setSysRole(sysRoles);
 			return loginUserVO;
 

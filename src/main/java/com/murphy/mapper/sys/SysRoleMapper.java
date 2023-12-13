@@ -13,5 +13,5 @@ public interface SysRoleMapper extends Mapper<SysRole>{
 
 
     @Select("select r.* from sys_user_role ru inner join sys_role r on r.id = ru.role_id where ru.user_id = #{userId}")
-    SysRole findRolesByUserId(String userId);
+    List<SysRole> findRolesByUserId(String userId);
 }

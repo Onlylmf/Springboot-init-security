@@ -18,14 +18,12 @@ public class Test {
     }
 
     @RequestMapping("/test1")
-    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public String test1(){
         SysUser sysUser = LoginUserUtil.getSysUser();
         return sysUser.toString();
     }
 
     @RequestMapping("/test2")
-    @AuthCheck(mustRole = UserConstant.DEFAULT_ROLE)
     public String test2(){
         SysUser sysUser = LoginUserUtil.getSysUser();
         return sysUser.toString();
